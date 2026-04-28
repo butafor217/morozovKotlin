@@ -24,6 +24,19 @@ fun calculatePower(strength: Int, agility: Int): Int {
 
 fun quickPower(strength: Int, agility: Int) = strength * 3 + agility * 2
 
+val greetHero: (String) -> String = {name -> "Привет, $name! Готов к приключениям?" }
+
+val attackLog: (String, Int) -> Unit = {name, damage ->
+    println("$name наносит $damage единиц урона!")
+}
+
+val calculateDamage: (Int, Int) -> Int = {power, multiplier -> power * multiplier}
+
+fun executeEvent(heroName: String, event: (String) -> Unit) {
+    println("--- Событие для $heroName ---")
+    event(heroName)
+}
+
 fun main() {
     println("===Карточка героя===")
     printWelcome()
@@ -36,6 +49,18 @@ fun main() {
     println("Сила удара: $power")
     val qp = quickPower(10, 15)
     println("Краткий расчет: $qp")
+    println(greetHero("Артемида"))
+    val skills = listOf("Меткий выстрел", "Уклонение", "Охота в темноте")
+    println("Навыки героя:")
+    skills.forEach { println("- $it") }
+    attackLog("Артемида", 85)
+    var result = calculateDamage(85, 2)
+    executeEvent("Артемида", {name -> println("$name использует Меткий выстрел!")})
+    executeEvent("Тор", {name -> println("$name исполользует Удар молнии!") })
+    executeEvent("Артемида") { name ->
+        println("$name принимает защитную стойку!")
+    }
+    println("Критический удар! Итоговый урон: $result")
     println("=== Конец карточки ===")
 }
 
