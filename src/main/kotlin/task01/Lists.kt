@@ -246,5 +246,34 @@ fun main() {
     println("Без дублей: $noDupes")
     println("Было ${withDupes.size}, стало ${noDupes.size}")
 
+    // — Связываем список с Map
+    println("--- Инвентарь → Цены (List + Map) ---")
+
+    val itemList = listOf("Меч", "Щит", "Зелье", "Лук")
+    val priceMap = mapOf("Меч" to 100, "Щит" to 80, "Зелье" to 25, "Лук" to 60, "Кинжал" to 45)
+
+// Получить цены для предметов из списка
+    val itemPricesFromMap = itemList.map { item ->
+        val price = priceMap[item] ?: 0
+        "$item - $price золота"
+    }
+
+    itemPricesFromMap.forEach { println(it) }
+
+// Посчитать стоимость инвентаря
+    val totalCost = itemList.sumOf { priceMap[it] ?: 0 }
+    println("Стоимость инвентаря: $totalCost золота")
+
+// Предметы которых нет в прайсе
+    val unknownItems = itemList.filter { it !in priceMap }
+    println("Без цены: $unknownItems")
+
+// — Превратить список в Set (убрать дубликаты) —
+    println("--- Список → Set ---")
+    val itemsWithDupes = listOf("Меч", "Щит", "Меч", "Лук", "Щит", "Факел")
+    val uniqueItems = itemsWithDupes.toSet()
+    println("Было: ${itemsWithDupes.size}, стало: ${uniqueItems.size}")
+    println("Уникальные: $uniqueItems")
+
     println("=== Конец ===")
 }
