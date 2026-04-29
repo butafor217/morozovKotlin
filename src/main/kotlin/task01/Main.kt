@@ -65,14 +65,52 @@ fun heroRank(level: Int) {
 
 fun canUseSkill(hp: Int, mana: Int) {
     if (hp > 0 && mana >= 20) {
-        println("Умение доступно – HP: $hp, Мана: $mana")
+        println("Умение доступно — HP: $hp, Мана: $mana")
     } else {
-        println("Умение недоступно – HP: $hp, Мана: $mana")
+        println("Умение недоступно — HP: $hp, Мана: $mana")
+    }
+}
+
+fun attackByClass(heroClass: String) {
+    when (heroClass) {
+        "Лучница" -> println("Выпускает град стрел!")
+        "Воин" -> println("Наносит мощный удар мечом!")
+        "Мар" -> println("Проклинает врага заклинанием!")
+        else -> println("Атакует как может!")
+    }
+}
+
+fun heroTier(level: Int) {
+    when (level) {
+        in 1..4 -> println("Тир: Новичок")
+        in 5..9 -> println("Тир: Обычный")
+        in 10..19 -> println("Тир: Редкий")
+        in 20..29 -> println("Тир: Эпический")
+        else -> println("Тир: Мифический")
+    }
+}
+
+fun getHeroTitle(level: Int): String {
+    return when {
+        level >= 25 -> "Владыка рун"
+        level >= 15 -> "Страж порядка"
+        level >= 10 -> "Опытный следопыт"
+        else -> "Юный искатель"
+    }
+}
+
+fun battleOutcome(hp: Int, enemyHp: Int, mana: Int) {
+    when {
+        hp <= 0 -> println("Поражение: герой пал в бою!")
+        enemyHp <= 0 -> println("Победа: враг повержен!")
+        hp > 0 && mana >= 30 -> println("Бой продолжается: ультимативная атака доступна!")
+        hp > 0 && mana < 30 -> println("Бой продолжается: экономь ману!")
+        else -> println("Неизвестный исход...")
     }
 }
 
 fun main() {
-    println("--- КАРТОЧКА ГЕРОЯ ---")
+    println("== КАРТОЧКА ГЕРОЯ ==")
     printWelcome()
     printHeroName("Артемида")
     describeHero("Артемида", "Лучница", 15)
@@ -106,5 +144,16 @@ fun main() {
     canUseSkill(80, 30)
     canUseSkill(80, 5)
     canUseSkill(0, 50)
-    println("--- КОНЕЦ КАРТОЧКИ ---")
+    attackByClass("Лучница")
+    attackByClass("Mar")
+    attackByClass("Воин")
+    heroTier(3)
+    heroTier(12)
+    heroTier(25)
+    val title = getHeroTitle(15)
+    println("Звание: $title")
+    battleOutcome(50, 0, 20)
+    battleOutcome(10, 30, 50)
+    battleOutcome(0, 80, 100)
+    println("== КОНЕЦ КАРТОЧКИ ==")
 }
