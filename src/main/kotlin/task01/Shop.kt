@@ -13,9 +13,9 @@ fun printShop() {
     println("МАГАЗИН")
     println("Твоё золото: $heroGold")
     printSection("Товары")
-    shopItems.forEach { (item, price) ->
-        val owned = if (hasItem(item)) "√" else ""
-        val canBuy = if (heroGold < price) "(мало золота)" else ""
+    for ((item, price) in shopItems) {
+        val owned = if (hasItem(item)) " √" else ""
+        val canBuy = if (heroGold < price) " (мало золота)" else ""
         println("$item - $price золота$owned$canBuy")
     }
 }
@@ -59,4 +59,59 @@ fun printAffordable(maxPrice: Int = 60) {
     printSection("Доступные до $maxPrice золота")
     shopItems.filter { (_, price) -> price <= maxPrice }
         .forEach { (item, price) -> println(" $item - $price" )}
+}
+
+fun shopMenu() {
+    var inShop = true
+    while (inShop) {
+        println("МАГАЗИН")
+        println("ЗОЛОТО: $heroGold\n")
+
+        val itemList = shopItems.entries.toList()
+        for ((index, entry) in itemList.withIndex()) {
+            val (item, price) = entry
+            val owned = if (hasItem(item)) " √" else ""
+            val canBuy = if (heroGold < price) " ×" else ""
+            println("${index + 1}. $item - $price$owned$canBuy")
+        }
+
+        println("\n1. Купить    2. Продать    3. Скидки    0. Назад")
+        when (readChoice(3)) {
+            1 -> {
+                printSection("ПОКУПКА")
+                for ((index, entry) in itemList.withIndex()) {
+                    val (item, price) = entry
+                    if (hasItem(item)) continue
+                    val canBuy = if (heroGold >= price) "" else " (мало золота)"
+                    println(" ${index + 1}. $item - $price$canBuy")
+                }
+                println(" 0. Отмена")
+                print("Номер товара: ")
+                val num = readLine()?.trim()?.toIntOrNull()
+                if (num != null && num in 1..itemList.size) {
+                    val (item, _) = itemList[num - 1]
+                    buyItem(item)
+                }
+            }
+            2 -> {
+                if (inventory.isEmpty()) {
+                    println("   Инвентарь пуст — нечего продавать!")
+                    continue
+                }
+                printSection("ПРОДАЖА")
+                for ((index, item) in inventory.withIndex()) {
+                    val sellPrice = (shopItems[item] ?: 10) / 2
+                    println(" ${index + 1}. $item - продажа: $sellPrice золота")
+                }
+                println(" 0. Отмена")
+                print("Номер предмета: ")
+                val num = readLine()?.trim()?.toIntOrNull()
+                if (num != null && num in 1..inventory.size) {
+                    sellItem(inventory[num - 1])
+                }
+            }
+            3 -> { printDiscounted(); printAffordable() }
+            0 -> inShop = false
+        }
+    }
 }

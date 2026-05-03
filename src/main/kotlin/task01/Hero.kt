@@ -8,6 +8,10 @@ var heroMaxHp = 100
 var heroMana = 50
 var heroGold = 200
 
+var heroMaxMana = 50
+var heroExp = 0
+val isAlive: Boolean get() = heroHp > 0
+
 val greetHero: (String) -> String = { name -> "Привет, $name! Готов к приключениям?" }
 
 val attackLog: (String, Int) -> Unit = { name, damage ->
@@ -90,7 +94,7 @@ fun heroPower(): Int {
 
 fun heal(amount: Int) {
     heroHp = minOf(heroHp + amount, heroMaxHp)
-    println("Исцеление +$amount HP. Текущее HP: $heroHp")
+    println(" Исцеление +$amount HP")
 }
 
 fun printHeroCard() {
@@ -118,4 +122,54 @@ fun printStats() {
     canUseSkill(heroHp, heroMana)
     println("Сила удара: ${heroPower()}")
     println("Золото: $heroGold")
+}
+
+fun takeDamage(amount: Int) {
+    heroHp = maxOf(heroHp - amount, 0)
+}
+
+fun restoreMana(amount: Int) {
+    heroMana = minOf(heroMana + amount, heroMaxMana)
+    println(" Мана +$amount")
+}
+
+fun rest() {
+    println("Отдых")
+    printBar("HP", heroHp, heroMaxHp)
+    printBar("Мана", heroMana, heroMaxMana)
+    println("Опыт:    $heroExp")
+
+    if (heroHp == heroMaxHp && heroMana == heroMaxMana) {
+        println("Ты полностью отдохнул. Нечего восстанавливать.")
+        return
+    }
+
+    println("\nОтдыхаешь у костра...")
+    var ticks = 0
+    while (heroHp < heroMaxHp || heroMana < heroMaxMana) {
+        ticks++
+        if (heroHp < heroMaxHp) heroHp = minOf(heroHp + 10, heroMaxHp)
+        if (heroMana < heroMaxMana) heroMana = minOf(heroMana + 8, heroMaxMana)
+        print(" Тик $ticks: ")
+        printBar("#", heroHp, heroMaxHp, 8)
+    }
+    println("Полностью восстановлен за $ticks тиков!")
+}
+
+fun gainExp(amount: Int) {
+    heroExp += amount
+    println(" Получено $amount опыта (всего: $heroExp)")
+
+
+    val newLevel = 1 + heroExp / 100
+    if (newLevel > heroLevel) {
+        for (lvl in (heroLevel + 1)..newLevel) {
+            println(" ★ уровень $lvl!")
+            heroLevel = lvl
+            heroMaxHp += 10
+            heroMaxMana += 5
+            heroHp = heroMaxHp
+            heroMana = heroMaxMana
+        }
+    }
 }

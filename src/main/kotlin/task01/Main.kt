@@ -25,39 +25,44 @@ package task01
 //
 
 fun main() {
-    printTitle("ДОБРО ПОЖАЛОВАТЬ В ИГРУ")
-    print("\n Герой: $heroName | Уровень: $heroLevel | Золото: $heroGold")
-
-// Игровые события
-    print(greetHero(heroName))
+    // Приветствие — один раз при запуске
+    println("ДОБРО ПОЖАЛОВАТЬ В ИГРУ")
+    println(" Герой: $heroName | Уровень: $heroLevel | Золото: $heroGold")
+    println(greetHero(heroName))
     attackLog(heroName, 85)
-    print("\nКритический удар! Урон: ${calculateDamage(85, 2)}")
-    executeEvent(heroName) { name -> println("$name использует Меткий выстрел!") }
+    pressAnyKey()
 
-// Экраны игры (будут пунктами меню)
-    printHeroCard()
-    printStats()
-    printCombatInfo()
-    printInventory()
-    printShop()
-    printResources()
-    printSkills()
+    // Главное меню — while-цикл
+    var running = true
+    while (running) {
+        println("ГЛАВНОЕ МЕНЮ")
+        printBar("HP ", heroHp, heroMaxHp)
+        printBar("Мана", heroMana, heroMaxMana)
+        println("Золото: $heroGold | Уровень: $heroLevel | Опыт: $heroExp\n")
+        println("1. Карточка героя")
+        println("2. Характеристики")
+        println("3. Арена")
+        println("4. Инвентарь")
+        println("5. Магазин")
+        println("6. Отдых")
+        println("7. Ресурсы")
+        println("8. Навыки")
+        println("9. Выход")
 
-// Учебные демонстрации (удалим при переходе на ООР)
-    demoLists()
-    demoMap()
-    demoSet()
-    demoGroupBy()
+        when (readChoice(9)) {
+            1 -> printHeroCard()
+            2 -> printStats()
+            3 -> arenaMenu()
+            4 -> inventoryMenu()
+            5 -> shopMenu()
+            6 -> rest()
+            7 -> printResources()
+            8 -> printSkills()
+            9 -> running = false
+        }
 
-// TODO: следующая практическая – заменить весь этот код на while-меню:
-//    while (true) {
-//        printTitle("ГЛАВНОЕ МЕНЮ")
-//        println("1. Арена")
-//        println("2. Инвентарь")
-//        println("3. Магазин")
-//        println("4. Характеристики")
-//        println("5. Выход")
-//    }
+        if (running) pressAnyKey()
+    }
 
-    println("\nИгра завершена. До встречи!")
+    println("\nДо встречи, $heroName!")
 }

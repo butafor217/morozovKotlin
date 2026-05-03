@@ -67,3 +67,79 @@ fun printSkills() {
     printSection("Разблокированные способности")
     unlockedAbilities.forEach { println(" × $it" )}
 }
+
+fun useItem(itemName: String): Boolean {
+    when {
+        "здоровья" in itemName.lowercase() -> {
+            if (!removeItem(itemName)) return false
+            val healAmt = rand(20, 40)
+            heal(healAmt)
+            println(" Использовано: $itemName (+$healAmt HP)")
+            return true
+        }
+        "силы" in itemName.lowercase() -> {
+            if (!removeItem(itemName)) return false
+            heroStats["сила"] = (heroStats["сила"] ?: 0) + 3
+            println(" Использовано: $itemName (+3 сила)")
+            return true
+        }
+        "невидимости" in itemName.lowercase() -> {
+            if (!removeItem(itemName)) return false
+            println(" Ты стал невидимым на время!")
+            return true
+        }
+        else -> {
+            println(" Нельзя использовать: $itemName")
+            return false
+        }
+    }
+}
+
+fun findFirstPotion(): String? {
+    for (item in inventory) {
+        if ("зелье" !in item.lowercase()) continue
+        return item
+    }
+    return null
+}
+
+fun inventoryMenu() {
+    var inInventory = true
+    while (inInventory) {
+        println("ИНВЕНТАРЬ")
+
+        if (inventory.isEmpty()) {
+            println("Пусто. Загляни в магазин!")
+        } else {
+            for ((index, item) in inventory.withIndex()) {
+                val canUse = if ("Зелье" in item) "[использовать]" else ""
+                println("${index + 1}. $item $canUse")
+            }
+        }
+
+        println("\n1. Использовать зелье  2. Выбросить предмет  0. Назад")
+        when (readChoice(2)) {
+            1 -> {
+                val potion = findFirstPotion()
+                if (potion != null) useItem(potion)
+                else println("Нет зелий для использования!")
+            }
+            2 -> {
+                if (inventory.isEmpty()) {
+                    println("Нечего выбрасывать!")
+                    continue
+                }
+                for ((index, item) in inventory.withIndex()) {
+                    println("${index + 1}. $item")
+                }
+                println("Номер: ")
+                val num = readLine()?.trim()?.toIntOrNull()
+                if (num != null && num in 1..inventory.size) {
+                    val removed = inventory.removeAt(num - 1)
+                    println("Выброшено: $removed")
+                } else println("Неверный номер")
+            }
+            0 -> inInventory = false
+        }
+    }
+}
